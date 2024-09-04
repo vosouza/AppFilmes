@@ -9,7 +9,7 @@ class AuthorizationInterceptor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val newRequest = request.newBuilder()
-            .addHeader("Authorization", apiKey)
+            .addHeader("Authorization", "Bearer $apiKey")
             .url(request.url)
             .build()
         return chain.proceed(newRequest)

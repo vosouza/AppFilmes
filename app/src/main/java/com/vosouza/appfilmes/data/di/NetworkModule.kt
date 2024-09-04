@@ -65,7 +65,7 @@ object NetworkModule {
         converterFactory: GsonConverterFactory
     ) : MoviesService {
         return Retrofit.Builder()
-            .baseUrl("https://api.themoviedb.org/3")
+            .baseUrl("https://api.themoviedb.org/3/")
             .client(client)
             .addConverterFactory(converterFactory)
             .build()

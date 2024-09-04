@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 
 class FakeLoginRepositoryImpl @Inject constructor() : LoginRepository {
-    override fun login(password: Int, userName: String): Boolean {
-        return password == 123 && userName == "user"
+    override fun login(password: String, userName: String): Boolean {
+        return password == "123" && userName == "user"
     }
 }

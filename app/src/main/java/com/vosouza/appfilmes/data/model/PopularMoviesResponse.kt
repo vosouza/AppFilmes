@@ -6,8 +6,8 @@ data class PopularMoviesResponse(
     var page: Int,
     var results: List<MovieResponse>,
     @SerializedName("total_pages")
-    val totalPages: Long,
+    var totalPages: Long,
     @SerializedName("total_results")
-    val totalResults: Long,
+    var totalResults: Long,
 )
 

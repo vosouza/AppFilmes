@@ -2,21 +2,21 @@ package com.vosouza.appfilmes.ui.main.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import com.vosouza.appfilmes.ui.main.navigation.MovieDestinations.MOVIE_LIST_ROUTE
-import com.vosouza.appfilmes.ui.main.navigation.MovieDestinations.FAVORITE_LIST_ROUTE
+import com.vosouza.appfilmes.ui.main.navigation.MovieDestinations.DETAILS_LIST_ROUTE
+import com.vosouza.appfilmes.ui.main.navigation.MovieDestinations.HOME_LIST_ROUTE
 import com.vosouza.appfilmes.ui.main.navigation.MovieDestinations.LOGIN_ROUTE
 
 object MovieDestinations {
-    const val MOVIE_LIST_ROUTE = "input"
-    const val FAVORITE_LIST_ROUTE = "input"
+    const val HOME_LIST_ROUTE = "home"
+    const val DETAILS_LIST_ROUTE = "details"
     const val LOGIN_ROUTE = "login"
 }
 
-class MovieNavigationActions(navController: NavController){
+class MovieNavigationActions(navController: NavController) {
 
-    val navigateToMovieList: () -> Unit = {
-        navController.navigate(MOVIE_LIST_ROUTE){
-            popUpTo(navController.graph.findStartDestination().id){
+    val navigateToHome: () -> Unit = {
+        navController.navigate(HOME_LIST_ROUTE) {
+            popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
             launchSingleTop = true
@@ -24,9 +24,9 @@ class MovieNavigationActions(navController: NavController){
         }
     }
 
-    val navigateToFavorite: () -> Unit = {
-        navController.navigate(FAVORITE_LIST_ROUTE){
-            popUpTo(navController.graph.findStartDestination().id){
+    val navigateToDetails: () -> Unit = {
+        navController.navigate(DETAILS_LIST_ROUTE) {
+            popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
             launchSingleTop = true
@@ -35,8 +35,8 @@ class MovieNavigationActions(navController: NavController){
     }
 
     val navigateToLogin: () -> Unit = {
-        navController.navigate(LOGIN_ROUTE){
-            popUpTo(navController.graph.findStartDestination().id){
+        navController.navigate(LOGIN_ROUTE) {
+            popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
             }
             launchSingleTop = true

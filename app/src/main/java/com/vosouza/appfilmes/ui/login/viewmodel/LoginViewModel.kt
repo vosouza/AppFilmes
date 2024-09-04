@@ -1,4 +1,4 @@
-package com.vosouza.appfilmes.ui.login
+package com.vosouza.appfilmes.ui.login.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,7 +50,7 @@ class LoginViewModel @Inject constructor(
 
     fun verifyLogin() {
         val stateValue = _loginState.value
-        if (repository.login(stateValue.password.toInt(), stateValue.user)) {
+        if (repository.login(stateValue.password, stateValue.user)) {
             _loginState.value = _loginState.value.copy(
                 loginSuccess = true
             )

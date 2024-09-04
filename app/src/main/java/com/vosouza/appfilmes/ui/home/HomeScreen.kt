@@ -16,6 +16,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,13 +29,30 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vosouza.appfilmes.R
+import com.vosouza.appfilmes.ui.home.favorites.FavoritesScreen
+import com.vosouza.appfilmes.ui.home.movies.MovieListScreen
+import com.vosouza.appfilmes.ui.home.state.HomeTabs
+import com.vosouza.appfilmes.ui.home.viewmodel.HomeViewModel
 import com.vosouza.appfilmes.ui.theme.black
 import com.vosouza.appfilmes.ui.theme.orange
+import com.vosouza.appfilmes.ui.theme.white
+import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    modifier: Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
+){
+    val state by viewModel.homeState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.getAllMovies()
+    }
+
     Scaffold(topBar = {
         TopAppBar(
             title = { Text("BRQ Movies", color = Color.White, fontSize = 28.sp) },
@@ -82,24 +100,32 @@ fun HomeScreen(){
                 .padding(padding)
                 .background(black)
         ) {
-            TabRow(selectedTabIndex = 0) {
-                Tab(selected = true, onClick = { /* TODO: Todos os Filmes */ }) {
+            TabRow(selectedTabIndex = state.selectedTab.ordinal) {
+                Tab(selected = state.selectedTab == HomeTabs.ALL_MOVIES, onClick = {
+                    viewModel.selectTab(HomeTabs.ALL_MOVIES)
+                }) {
                     Text(
                         "Todos os Filmes",
                         modifier = Modifier.padding(16.dp),
-                        color = orange,
+                        color = if (state.selectedTab == HomeTabs.ALL_MOVIES) orange else white,
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Tab(selected = false, onClick = { /* TODO: Outros tabs */ }) {
+                Tab(selected = state.selectedTab == HomeTabs.FAVORITE_MOVIES, onClick = {
+                    viewModel.selectTab(HomeTabs.FAVORITE_MOVIES)
+                }) {
                     Text(
                         "Outra Categoria",
                         modifier = Modifier.padding(16.dp),
-                        color = Color.White
+                        color =  if (state.selectedTab == HomeTabs.FAVORITE_MOVIES) orange else white
                     )
                 }
             }
 
+            when(state.selectedTab){
+                HomeTabs.ALL_MOVIES -> MovieListScreen(modifier)
+                HomeTabs.FAVORITE_MOVIES -> FavoritesScreen()
+            }
 
         }
     })

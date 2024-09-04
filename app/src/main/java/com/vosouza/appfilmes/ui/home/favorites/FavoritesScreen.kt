@@ -1,4 +1,4 @@
-package com.vosouza.appfilmes.ui.movies
+package com.vosouza.appfilmes.ui.home.favorites
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,14 +15,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.vosouza.appfilmes.R
 
 @Composable
-fun MovieListScreen(
-    modifier: Modifier
-) {
+fun FavoritesScreen() {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
@@ -51,10 +48,4 @@ fun MoviePoster() {
             contentDescription = "Filme", modifier = Modifier.fillMaxSize()
         )
     }
-}
-
-@Composable
-@Preview
-fun Preview() {
-    MovieListScreen(Modifier)
 }
