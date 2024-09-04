@@ -4,7 +4,7 @@ import com.vosouza.appfilmes.data.model.PopularMoviesResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface PopularMoviesService {
+interface MoviesService {
 
     @GET("movie/popular")
     fun getPopularMoviesList(

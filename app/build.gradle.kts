@@ -1,3 +1,6 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import org.jetbrains.kotlin.konan.properties.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -9,9 +12,13 @@ android {
     namespace = "com.vosouza.appfilmes"
     compileSdk = 34
 
+    buildFeatures{
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.vosouza.appfilmes"
-        minSdk = 24
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -24,11 +31,25 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            val prop = Properties()
+            prop.load(project.rootProject.file("local.properties").reader())
+            buildConfigField("String", "API_KEY", "\"${prop.getProperty("API_KEY")}\"")
+        }
+
+        debug {
+            applicationIdSuffix = ".debug"
+            isDebuggable = true
+
+            val prop = Properties()
+            prop.load(project.rootProject.file("local.properties").reader())
+            buildConfigField("String", "API_KEY", "\"${prop.getProperty("API_KEY")}\"")
         }
     }
     compileOptions {
@@ -59,6 +80,7 @@ dependencies {
     //ROOM
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     ksp(libs.androidx.room.ktx)
 
     //hilt
@@ -68,8 +90,25 @@ dependencies {
 
     //network
     implementation(libs.squareup.retrofit)
-    implementation(libs.google.gson)
     implementation(libs.squareup.retrofit.converter)
+
+    //gson
+    implementation(libs.google.gson)
+
+    //okhttp
+    api(libs.squareup.okhttp)
+    api(libs.squareup.okhttp.logging)
+    api(platform(libs.squareup.okhttp.bom))
+
+    //mockk
+    testImplementation(libs.mockk)
+    testImplementation(libs.mockk.agent)
+
+    //coroutine test
+    testImplementation(libs.kotlinx.coroutines)
+
+    //splash
+    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
