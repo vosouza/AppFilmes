@@ -110,6 +110,9 @@ dependencies {
     //splash
     implementation(libs.androidx.core.splashscreen)
 
+    //coil - image loader
+    implementation(libs.io.coil)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

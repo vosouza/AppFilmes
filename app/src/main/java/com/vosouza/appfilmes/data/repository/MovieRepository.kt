@@ -1,7 +1,7 @@
 package com.vosouza.appfilmes.data.repository
 
+import com.vosouza.appfilmes.data.model.MovieDetailResponse
 import com.vosouza.appfilmes.data.model.PopularMoviesResponse
-import retrofit2.http.Query
 
 interface MovieRepository {
 
@@ -10,4 +10,7 @@ interface MovieRepository {
         page: Int
     ) : PopularMoviesResponse
 
+    suspend fun getMovieDetail(
+        movieId: Int
+    ): MovieDetailResponse
 }

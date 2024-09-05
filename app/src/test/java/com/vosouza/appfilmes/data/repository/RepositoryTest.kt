@@ -31,7 +31,7 @@ class RepositoryTest {
     fun test_repository_success() = runTest {
         val response = mockResponse()
 
-        every { service.getPopularMoviesList("",0) } returns response
+//        every { service.getPopularMoviesList("",0) } returns response
 
         val repositoryResponse = withContext(Dispatchers.IO){
             moviesRepository.getPopularMovies("",0)

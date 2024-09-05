@@ -34,22 +34,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vosouza.appfilmes.R
 import com.vosouza.appfilmes.ui.home.favorites.FavoritesScreen
 import com.vosouza.appfilmes.ui.home.movies.MovieListScreen
+import com.vosouza.appfilmes.ui.home.state.HomeState
 import com.vosouza.appfilmes.ui.home.state.HomeTabs
 import com.vosouza.appfilmes.ui.home.viewmodel.HomeViewModel
 import com.vosouza.appfilmes.ui.theme.black
 import com.vosouza.appfilmes.ui.theme.orange
 import com.vosouza.appfilmes.ui.theme.white
-import kotlinx.coroutines.selects.select
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-){
+    navigateToDetails: (Long) -> Unit
+) {
     val state by viewModel.homeState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(Unit) {
         viewModel.getAllMovies()
     }
 
@@ -57,40 +58,7 @@ fun HomeScreen(
         TopAppBar(
             title = { Text("BRQ Movies", color = Color.White, fontSize = 28.sp) },
             actions = {
-                var menuExpanded by remember {
-                    mutableStateOf(false)
-                }
-
-                IconButton(onClick = { menuExpanded = !menuExpanded }) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.menu_icon),
-                        contentDescription = "Menu",
-                        tint = Color.Unspecified
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = menuExpanded,
-                    onDismissRequest = { menuExpanded = false },
-                ) {
-                    DropdownMenuItem(
-                        text = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    modifier = Modifier.padding(8.dp),
-                                    imageVector = ImageVector.vectorResource(R.drawable.exit_icon),
-                                    contentDescription = "Exit"
-                                )
-                                Text("Sair", color = Color.White, fontSize = 24.sp)
-                            }
-                        },
-                        onClick = {
-
-                        },
-                    )
-                }
+                HomeMenu()
             },
         )
     }, content = { padding ->
@@ -100,33 +68,97 @@ fun HomeScreen(
                 .padding(padding)
                 .background(black)
         ) {
-            TabRow(selectedTabIndex = state.selectedTab.ordinal) {
-                Tab(selected = state.selectedTab == HomeTabs.ALL_MOVIES, onClick = {
-                    viewModel.selectTab(HomeTabs.ALL_MOVIES)
-                }) {
-                    Text(
-                        "Todos os Filmes",
-                        modifier = Modifier.padding(16.dp),
-                        color = if (state.selectedTab == HomeTabs.ALL_MOVIES) orange else white,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-                Tab(selected = state.selectedTab == HomeTabs.FAVORITE_MOVIES, onClick = {
-                    viewModel.selectTab(HomeTabs.FAVORITE_MOVIES)
-                }) {
-                    Text(
-                        "Outra Categoria",
-                        modifier = Modifier.padding(16.dp),
-                        color =  if (state.selectedTab == HomeTabs.FAVORITE_MOVIES) orange else white
-                    )
-                }
+            HomeTabs(state) { tab ->
+                viewModel.selectTab(tab)
             }
 
-            when(state.selectedTab){
-                HomeTabs.ALL_MOVIES -> MovieListScreen(modifier)
-                HomeTabs.FAVORITE_MOVIES -> FavoritesScreen()
+            when (state.selectedTab) {
+                HomeTabs.ALL_MOVIES -> MovieListScreen(
+                    modifier,
+                    listData = state.moviesResponse,
+                    isLoading = state.isLoading,
+                    loadMore = { itemIndex ->
+                        viewModel.getMoreMovies(itemIndex)
+                    },
+                    navigateToDetail = navigateToDetails,
+                )
+
+                HomeTabs.FAVORITE_MOVIES -> FavoritesScreen(
+                    modifier,
+                    listData = state.moviesResponse,
+                    isLoading = state.isLoading,
+                    loadMore = { itemIndex ->
+                        viewModel.getMoreMovies(itemIndex)
+                    }
+                )
             }
 
         }
     })
+}
+
+@Composable
+private fun HomeMenu() {
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    IconButton(onClick = { menuExpanded = !menuExpanded }) {
+        Icon(
+            imageVector = ImageVector.vectorResource(id = R.drawable.menu_icon),
+            contentDescription = "Menu",
+            tint = Color.Unspecified
+        )
+    }
+
+    DropdownMenu(
+        expanded = menuExpanded,
+        onDismissRequest = { menuExpanded = false },
+    ) {
+        DropdownMenuItem(
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(8.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.exit_icon),
+                        contentDescription = "Exit"
+                    )
+                    Text("Sair", color = Color.White, fontSize = 24.sp)
+                }
+            },
+            onClick = {
+
+            },
+        )
+    }
+}
+
+@Composable
+private fun HomeTabs(
+    state: HomeState,
+    selectTab: (HomeTabs) -> Unit,
+) {
+    TabRow(selectedTabIndex = state.selectedTab.ordinal) {
+        Tab(selected = state.selectedTab == HomeTabs.ALL_MOVIES, onClick = {
+            selectTab(HomeTabs.ALL_MOVIES)
+        }) {
+            Text(
+                "Todos os Filmes",
+                modifier = Modifier.padding(16.dp),
+                color = if (state.selectedTab == HomeTabs.ALL_MOVIES) orange else white,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Tab(selected = state.selectedTab == HomeTabs.FAVORITE_MOVIES, onClick = {
+            selectTab(HomeTabs.FAVORITE_MOVIES)
+        }) {
+            Text(
+                "Outra Categoria",
+                modifier = Modifier.padding(16.dp),
+                color = if (state.selectedTab == HomeTabs.FAVORITE_MOVIES) orange else white
+            )
+        }
+    }
 }
