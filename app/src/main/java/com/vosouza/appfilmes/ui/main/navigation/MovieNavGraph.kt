@@ -16,7 +16,7 @@ fun MoviesNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     navDestinations: MovieNavigationActions,
-    startDestination: String = MovieDestinations.HOME_LIST_ROUTE,
+    startDestination: String = MovieDestinations.LOGIN_ROUTE,
 ){
     NavHost(navController = navController, startDestination = startDestination, modifier = modifier){
         composable(

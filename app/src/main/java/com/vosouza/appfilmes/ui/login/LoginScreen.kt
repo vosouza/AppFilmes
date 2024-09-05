@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,9 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vosouza.appfilmes.R
+import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.ui.login.viewmodel.LoginViewModel
 import com.vosouza.appfilmes.ui.theme.black
 import com.vosouza.appfilmes.ui.theme.buttonDisable
+import com.vosouza.appfilmes.ui.theme.gray
 import com.vosouza.appfilmes.ui.theme.orange
 
 @Composable
@@ -45,10 +50,6 @@ fun LoginScreen(
     navigateToHome: () -> Unit,
 ) {
     val state by viewModel.loginState.collectAsStateWithLifecycle()
-    if (state.loginSuccess) {
-        navigateToHome.invoke()
-    }
-
     Scaffold { padding ->
         Column(
             modifier = modifier
@@ -62,14 +63,14 @@ fun LoginScreen(
 
             Image(
                 painter = painterResource(id = R.drawable.splash),
-                contentDescription = "Logo",
+                contentDescription = stringResource(R.string.logo),
                 modifier = modifier
                     .size(224.dp)
             )
 
             Spacer(modifier = Modifier.height(50.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = state.user,
                 onValueChange = { viewModel.setUser(it) },
                 label = { Text(stringResource(R.string.user)) },
@@ -82,9 +83,14 @@ fun LoginScreen(
                 trailingIcon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.cancel_icon),
-                        contentDescription = "Usuário"
+                        contentDescription = stringResource(R.string.user)
                     )
                 },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = gray,
+                    unfocusedTextColor = gray
+                ),
+                singleLine = true,
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
@@ -92,23 +98,30 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = state.password,
                 onValueChange = { viewModel.setPassword(it) },
-                label = { Text("Senha") },
+                singleLine = true,
+                label = { Text(stringResource(R.string.password)) },
                 leadingIcon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.password_icon),
-                        contentDescription = "Senha"
+                        contentDescription = stringResource(R.string.password)
                     )
                 },
                 trailingIcon = {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.cancel_icon),
-                        contentDescription = "Usuário"
-                    )
+                    IconButton(onClick = { viewModel.setPassword("") }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.cancel_icon),
+                            contentDescription = stringResource(id = R.string.cancel)
+                        )
+                    }
                 },
                 visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = gray,
+                    unfocusedTextColor = gray
+                ),
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -131,20 +144,33 @@ fun LoginScreen(
             ) {
                 Text(
                     modifier = modifier.padding(top = 5.dp, bottom = 5.dp),
-                    text = "Entrar",
+                    text = stringResource(R.string.loggin),
                     fontSize = 20.sp
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            when (state.loginStatus) {
+                is ResultStatus.Loading -> CircularProgressIndicator()
+                is ResultStatus.Success -> navigateToHome.invoke()
+                is ResultStatus.Error -> Text(
+                    text = stringResource(R.string.loggin_error),
+                    fontSize = 14.sp,
+                    color = Color.Red
+                )
+
+                else -> {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
 
             TextButton(onClick = { }) {
-                Text("Esqueci a Senha", color = Color.White)
+                Text(stringResource(R.string.forgot_password), color = Color.White)
             }
         }
     }
 
 }
+
 
 @Composable
 @Preview

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">AppFilmes</string>
     <string name="user">Usuário</string>
+    <string name="password">Senha</string>
+    <string name="cancel">Cancelar</string>
+    <string name="forgot_password">Esqueci a Senha</string>
+    <string name="loggin_error">Erro ao efetuar o login</string>
+    <string name="loggin">Entrar</string>
+    <string name="logo">Logo</string>
 </resources>
