@@ -3,10 +3,11 @@ package com.vosouza.appfilmes.ui.login
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -57,7 +58,8 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            MarginBox(50)
+            Spacer(modifier = Modifier.height(50.dp))
+
             Image(
                 painter = painterResource(id = R.drawable.splash),
                 contentDescription = "Logo",
@@ -65,7 +67,8 @@ fun LoginScreen(
                     .size(224.dp)
             )
 
-            MarginBox(50)
+            Spacer(modifier = Modifier.height(50.dp))
+
             OutlinedTextField(
                 value = state.user,
                 onValueChange = { viewModel.setUser(it) },
@@ -87,7 +90,8 @@ fun LoginScreen(
                     .padding(horizontal = 16.dp),
             )
 
-            MarginBox(size = 48)
+            Spacer(modifier = Modifier.height(48.dp))
+
             OutlinedTextField(
                 value = state.password,
                 onValueChange = { viewModel.setPassword(it) },
@@ -109,7 +113,8 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
             )
-            MarginBox(size = 48)
+
+            Spacer(modifier = Modifier.height(48.dp))
 
             Button(
                 onClick = { viewModel.verifyLogin() },
@@ -130,18 +135,15 @@ fun LoginScreen(
                     fontSize = 20.sp
                 )
             }
-            MarginBox(size = 16)
-            TextButton(onClick = { /* Ação de esqueci a senha */ }) {
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            TextButton(onClick = { }) {
                 Text("Esqueci a Senha", color = Color.White)
             }
         }
     }
 
-}
-
-@Composable
-fun MarginBox(size: Int) {
-    Box(modifier = Modifier.size(size.dp))
 }
 
 @Composable
