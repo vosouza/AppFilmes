@@ -7,6 +7,7 @@ import com.vosouza.appfilmes.data.repository.MovieRepository
 import com.vosouza.appfilmes.ui.home.state.HomeState
 import com.vosouza.appfilmes.ui.home.state.HomeTabs
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val repository: MovieRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
     private val _homeState = MutableStateFlow(HomeState())
@@ -40,14 +42,14 @@ class HomeViewModel @Inject constructor(
                     isLoading = true
                 )
 
-                val response = withContext(Dispatchers.IO) {
+                val response = withContext(dispatcher) {
                     repository.getPopularMovies(
                         "pt", itemPage
                     )
                 }
 
                 _homeState.value = _homeState.value.copy(
-                    moviesResponse = addlist(_homeState.value.moviesResponse, response.results),
+                    moviesResponse = addList(_homeState.value.moviesResponse, response.results),
                     isLoading = false,
                     totalPages = response.totalPages,
                     currentPage = response.page
@@ -69,7 +71,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addlist(firstList: List<MovieResponse>, secondList: List<MovieResponse>) =
+    private fun addList(firstList: List<MovieResponse>, secondList: List<MovieResponse>) =
         mutableListOf<MovieResponse>().apply {
             addAll(firstList)
             addAll(secondList)

@@ -37,7 +37,7 @@ fun MoviesNavGraph(
         }
         composable(
             route = MovieDestinations.LOGIN_ROUTE
-        ){ navBackStackEntry ->
+        ){ _ ->
             LoginScreen(modifier = modifier, navigateToHome = navDestinations.navigateToHome)
         }
 

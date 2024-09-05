@@ -6,6 +6,7 @@ import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.data.model.MovieDetailResponse
 import com.vosouza.appfilmes.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     val repository: MovieRepository,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ViewModel() {
 
     private val _homeState: MutableStateFlow<ResultStatus<DetailsState>> =
@@ -34,7 +36,7 @@ class DetailsViewModel @Inject constructor(
 
                 val id = movieId.toInt()
 
-                val response = withContext(Dispatchers.IO) {
+                val response = withContext(dispatcher) {
                     repository.getMovieDetail(id)
                 }
 

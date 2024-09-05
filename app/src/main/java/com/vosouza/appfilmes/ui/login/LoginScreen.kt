@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,11 +41,10 @@ import com.vosouza.appfilmes.ui.theme.orange
 fun LoginScreen(
     modifier: Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
 ) {
     val state by viewModel.loginState.collectAsStateWithLifecycle()
-
-    if(state.loginSuccess){
+    if (state.loginSuccess) {
         navigateToHome.invoke()
     }
 
@@ -69,11 +69,11 @@ fun LoginScreen(
             OutlinedTextField(
                 value = state.user,
                 onValueChange = { viewModel.setUser(it) },
-                label = { Text("Usuário") },
+                label = { Text(stringResource(R.string.user)) },
                 leadingIcon = {
                     Icon(
                         imageVector = ImageVector.vectorResource(id = R.drawable.user_icon),
-                        contentDescription = "Usuário"
+                        contentDescription = stringResource(R.string.user)
                     )
                 },
                 trailingIcon = {
@@ -146,6 +146,6 @@ fun MarginBox(size: Int) {
 
 @Composable
 @Preview
-fun preview() {
-    LoginScreen(Modifier, navigateToHome = {  })
+fun Preview() {
+    LoginScreen(Modifier, navigateToHome = { })
 }

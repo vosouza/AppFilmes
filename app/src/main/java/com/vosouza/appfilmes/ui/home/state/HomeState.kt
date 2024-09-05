@@ -1,7 +1,6 @@
 package com.vosouza.appfilmes.ui.home.state
 
 import com.vosouza.appfilmes.data.model.MovieResponse
-import com.vosouza.appfilmes.data.model.PopularMoviesResponse
 
 enum class HomeTabs{
     ALL_MOVIES,

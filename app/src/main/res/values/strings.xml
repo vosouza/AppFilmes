@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AppFilmes</string>
+    <string name="user">Usuário</string>
 </resources>

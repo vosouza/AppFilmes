@@ -1,6 +1,5 @@
 package com.vosouza.appfilmes.ui.home.favorites
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,12 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.vosouza.appfilmes.R
 import com.vosouza.appfilmes.core.util.imageNetworkURL
 import com.vosouza.appfilmes.data.model.MovieResponse
 
@@ -69,7 +66,7 @@ fun MoviePoster(movie: MovieResponse) {
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .clickable { /* TODO: Clique no filme */ },
+            .clickable {  },
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(4.dp)
     ) {

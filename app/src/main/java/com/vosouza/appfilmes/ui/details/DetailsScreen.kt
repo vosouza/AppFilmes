@@ -154,7 +154,7 @@ private fun SuccessScreen(
                         )
                     }
                     IconButton(
-                        onClick = { /* TODO: implementar ação de voltar */ },
+                        onClick = {  },
                         modifier = Modifier
                             .padding(24.dp)
                             .align(Alignment.TopEnd)
@@ -269,7 +269,7 @@ private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
         }
     }, actions = {
         IconButton(
-            onClick = { /* TODO: implementar ação de favoritar */ },
+            onClick = {  },
             modifier = Modifier.padding(16.dp)
         ) {
             Icon(
