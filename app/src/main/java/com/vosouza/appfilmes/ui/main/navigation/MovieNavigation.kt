@@ -28,9 +28,6 @@ class MovieNavigationActions(navController: NavController) {
 
     val navigateToDetails: (movieId: Long) -> Unit = { movieId ->
         navController.navigate(DETAILS_LIST_ROUTE.replace("{$DETAILS_LIST_ROUTE_PARAM}",movieId.toString())) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
             launchSingleTop = true
             restoreState = true
         }

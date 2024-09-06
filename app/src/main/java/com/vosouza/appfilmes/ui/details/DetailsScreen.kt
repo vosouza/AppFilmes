@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -86,11 +87,17 @@ fun DetailsScreen(
 
     when (state.value) {
         is ResultStatus.Loading -> {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp)
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(124.dp)
+                        .padding(24.dp)
+                )
+            }
         }
 
         is ResultStatus.Success -> {
@@ -99,7 +106,16 @@ fun DetailsScreen(
         }
 
         is ResultStatus.Error -> {
-            Text(text = "Ocorreu um erro, tente novamente mais tarde")
+            val text = (state.value as ResultStatus.Error).throwable.message
+                ?: stringResource(R.string.ocorreu_um_erro_tente_novamente_mais_tarde)
+
+            Row(
+                Modifier.padding(32.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = text, fontSize = 24.sp, color = orange)
+            }
         }
     }
 
@@ -155,7 +171,7 @@ private fun SuccessScreen(
                         )
                     }
                     IconButton(
-                        onClick = {  },
+                        onClick = { },
                         modifier = Modifier
                             .padding(24.dp)
                             .align(Alignment.TopEnd)
@@ -270,7 +286,7 @@ private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
         }
     }, actions = {
         IconButton(
-            onClick = {  },
+            onClick = { },
             modifier = Modifier.padding(16.dp)
         ) {
             Icon(

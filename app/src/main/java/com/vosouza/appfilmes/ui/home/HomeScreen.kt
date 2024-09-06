@@ -150,7 +150,7 @@ private fun HomeTabs(
             selectTab(HomeTabs.FAVORITE_MOVIES)
         }) {
             Text(
-                "Outra Categoria",
+                "Favoritos",
                 modifier = Modifier.padding(16.dp),
                 color = if (state.selectedTab == HomeTabs.FAVORITE_MOVIES) orange else white
             )
