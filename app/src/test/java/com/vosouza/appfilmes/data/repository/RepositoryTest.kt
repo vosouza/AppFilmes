@@ -1,5 +1,9 @@
 package com.vosouza.appfilmes.data.repository
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.vosouza.appfilmes.data.exception.GenericException
+import com.vosouza.appfilmes.data.exception.Http400Exception
+import com.vosouza.appfilmes.data.exception.InternetException
 import com.vosouza.appfilmes.data.model.MovieDetailResponse
 import com.vosouza.appfilmes.data.model.PopularMoviesResponse
 import com.vosouza.appfilmes.data.network.MoviesService
@@ -9,12 +13,32 @@ import io.mockk.mockk
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.After
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThrows
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.internal.matchers.Null
+import retrofit2.Response
+import java.io.IOException
 
+@ExperimentalCoroutinesApi
 class RepositoryTest {
+
+    @get:Rule
+    var mainCoroutineRule = InstantTaskExecutorRule()
+    private val dispatcher = StandardTestDispatcher()
 
     private val service = mockk<MoviesService>()
     private lateinit var moviesRepository: MovieRepository
@@ -22,12 +46,19 @@ class RepositoryTest {
 
     @Before
     fun setup(){
+        Dispatchers.setMain(dispatcher)
         moviesRepository = MoviesRepositoryImpl(service)
+    }
+
+    @After
+    fun tearDown(){
+        Dispatchers.resetMain()
     }
 
     @Test
     fun test_repository_success() = runTest {
-        val response = mockResponse()
+        val expected = mockResponse()
+        val response = Response.success(expected)
 
         coEvery { service.getPopularMoviesList(any(),any()) } returns response
 
@@ -35,31 +66,60 @@ class RepositoryTest {
             moviesRepository.getPopularMovies("",0)
         }
 
-        assertEquals(repositoryResponse, response)
+        assertEquals(repositoryResponse, expected)
     }
 
 
     @Test
-    fun `Verify case of exception is thrown`() = runTest {
-        val exception = Exception()
+    fun `Verify case of exception is thrown for http 400`() = runTest{
+        val expected = Response.error<PopularMoviesResponse>(400, mockErrorBody())
 
-        coEvery { service.getPopularMoviesList(any(),any()) } throws exception
+        coEvery { service.getPopularMoviesList(any(),any()) } returns expected
 
-        var exceptionIsThrown = false
-        try {
-            withContext(Dispatchers.IO){
-                moviesRepository.getPopularMovies("",0)
-            }
-        }catch (e: Exception){
-            exceptionIsThrown = true
+        val exception = assertThrows(Http400Exception::class.java) {
+                kotlinx.coroutines.test.runTest {
+                    moviesRepository.getPopularMovies("",0)
+                }
         }
 
-        assertTrue(exceptionIsThrown)
+        assertNotNull(exception)
     }
+
+    @Test
+    fun `Verify case of exception is thrown for other error`() = runTest{
+        val expected = Response.error<PopularMoviesResponse>(500, mockErrorBody())
+
+        coEvery { service.getPopularMoviesList(any(),any()) } returns expected
+
+        val exception = assertThrows(GenericException::class.java) {
+            kotlinx.coroutines.test.runTest {
+                moviesRepository.getPopularMovies("",0)
+            }
+        }
+
+        assertNotNull(exception)
+    }
+
+    @Test
+    fun `Verify case of exception is thrown for no internet`() = runTest{
+
+        coEvery { service.getPopularMoviesList(any(),any()) } throws IOException()
+
+        val exception = assertThrows(InternetException::class.java) {
+            kotlinx.coroutines.test.runTest {
+                moviesRepository.getPopularMovies("",0)
+            }
+        }
+
+        assertNotNull(exception)
+    }
+
+
 
     @Test
     fun `Verify details call success`() = runTest {
-        val response = mockDetails()
+        val expected = mockDetails()
+        val response = Response.success(expected)
 
         coEvery { service.getMovieDetail(any()) } returns response
 
@@ -67,26 +127,52 @@ class RepositoryTest {
             moviesRepository.getMovieDetail(0)
         }
 
-        assertEquals(repositoryResponse, response)
+        assertEquals(repositoryResponse, expected)
     }
 
 
     @Test
-    fun `Verify case of exception is thrown for details call`() = runTest {
-        val exception = Exception()
+    fun `Verify details call case of exception is thrown for http 400`() = runTest{
+        val expected = Response.error<MovieDetailResponse>(400, mockErrorBody())
 
-        coEvery { service.getMovieDetail(any()) } throws exception
+        coEvery { service.getMovieDetail(any()) } returns expected
 
-        var exceptionIsThrown = false
-        try {
-            withContext(Dispatchers.IO){
+        val exception = assertThrows(Http400Exception::class.java) {
+            kotlinx.coroutines.test.runTest {
                 moviesRepository.getMovieDetail(0)
             }
-        }catch (e: Exception){
-            exceptionIsThrown = true
         }
 
-        assertTrue(exceptionIsThrown)
+        assertNotNull(exception)
+    }
+
+    @Test
+    fun `Verify details call case of exception is thrown for other error`() = runTest{
+        val expected = Response.error<MovieDetailResponse>(500, mockErrorBody())
+
+        coEvery { service.getMovieDetail(any()) } returns expected
+
+        val exception = assertThrows(GenericException::class.java) {
+            kotlinx.coroutines.test.runTest {
+                moviesRepository.getMovieDetail(0)
+            }
+        }
+
+        assertNotNull(exception)
+    }
+
+    @Test
+    fun `Verify details call case of exception is thrown for no internet`() = runTest{
+
+        coEvery { service.getMovieDetail(any()) } throws IOException()
+
+        val exception = assertThrows(InternetException::class.java) {
+            kotlinx.coroutines.test.runTest {
+                moviesRepository.getMovieDetail(0)
+            }
+        }
+
+        assertNotNull(exception)
     }
 
     private fun mockResponse() = PopularMoviesResponse(
@@ -97,4 +183,8 @@ class RepositoryTest {
     )
 
     private fun mockDetails() = MovieDetailResponse()
+
+    private fun mockErrorBody() = "{}".toResponseBody("application/json".toMediaTypeOrNull())
+
+    class EmptyBody()
 }

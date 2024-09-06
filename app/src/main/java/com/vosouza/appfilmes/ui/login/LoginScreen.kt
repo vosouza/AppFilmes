@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,10 +85,12 @@ fun LoginScreen(
                     )
                 },
                 trailingIcon = {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.cancel_icon),
-                        contentDescription = stringResource(R.string.user)
-                    )
+                    IconButton(onClick = { viewModel.setUser("") }) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(id = R.drawable.cancel_icon),
+                            contentDescription = stringResource(id = R.string.cancel)
+                        )
+                    }
                 },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = gray,
@@ -124,6 +128,7 @@ fun LoginScreen(
                     focusedContainerColor = gray,
                     unfocusedContainerColor = gray
                 ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)

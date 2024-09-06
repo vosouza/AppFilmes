@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,11 +17,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -28,6 +31,7 @@ import com.vosouza.appfilmes.R
 import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.core.util.imageNetworkURL
 import com.vosouza.appfilmes.data.model.MovieResponse
+import com.vosouza.appfilmes.ui.theme.orange
 
 @Composable
 fun MovieListScreen(
@@ -53,7 +57,14 @@ fun MovieListScreen(
         }
 
         is ResultStatus.Error -> {
-            Text(text = stringResource(R.string.ocorreu_um_erro_tente_novamente_mais_tarde))
+            val text = data.throwable.message ?: stringResource(R.string.ocorreu_um_erro_tente_novamente_mais_tarde)
+            Row(
+                Modifier.padding(32.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(text = text, fontSize = 24.sp, color = orange)
+            }
         }
     }
 
@@ -67,6 +78,8 @@ private fun MoviesList(
     listData: List<MovieResponse>,
     modifier: Modifier,
 ) {
+    Spacer(modifier = Modifier.height(24.dp))
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
@@ -102,6 +115,7 @@ fun MoviePoster(navigateToDetail: (Long) -> Unit, movie: MovieResponse) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(4.dp)
             .height(250.dp)
             .clickable { navigateToDetail.invoke(movie.id) },
         shape = MaterialTheme.shapes.medium,
