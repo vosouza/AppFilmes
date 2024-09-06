@@ -19,6 +19,7 @@ coroutinesTest = "1.9.0-RC.2"
 splashScreen = "1.0.1"
 lifecycleRuntimeComposeAndroid = "2.8.4"
 coil = "2.7.0"
+coreTest="2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,6 +34,7 @@ androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", nam
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen" }
+androidx-core-test = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTest" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

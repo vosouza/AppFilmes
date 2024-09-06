@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vosouza.appfilmes.R
-import com.vosouza.appfilmes.ui.home.favorites.FavoritesScreen
 import com.vosouza.appfilmes.ui.home.movies.MovieListScreen
 import com.vosouza.appfilmes.ui.home.state.HomeState
 import com.vosouza.appfilmes.ui.home.state.HomeTabs
@@ -75,7 +74,8 @@ fun HomeScreen(
             when (state.selectedTab) {
                 HomeTabs.ALL_MOVIES -> MovieListScreen(
                     modifier,
-                    listData = state.moviesResponse,
+                    data = state.moviesResponse,
+                    movieList = state.movieList,
                     isLoading = state.isLoading,
                     loadMore = { itemIndex ->
                         viewModel.getMoreMovies(itemIndex)
@@ -83,14 +83,7 @@ fun HomeScreen(
                     navigateToDetail = navigateToDetails,
                 )
 
-                HomeTabs.FAVORITE_MOVIES -> FavoritesScreen(
-                    modifier,
-                    listData = state.moviesResponse,
-                    isLoading = state.isLoading,
-                    loadMore = { itemIndex ->
-                        viewModel.getMoreMovies(itemIndex)
-                    }
-                )
+                HomeTabs.FAVORITE_MOVIES -> Text(text = "")
             }
 
         }

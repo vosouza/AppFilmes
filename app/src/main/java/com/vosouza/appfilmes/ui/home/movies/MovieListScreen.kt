@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -22,16 +23,47 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.core.util.imageNetworkURL
 import com.vosouza.appfilmes.data.model.MovieResponse
 
 @Composable
 fun MovieListScreen(
     modifier: Modifier,
-    listData: List<MovieResponse>,
+    data: ResultStatus<Unit>,
     loadMore: (Int) -> Unit,
     isLoading: Boolean,
     navigateToDetail: (Long) -> Unit,
+    movieList: List<MovieResponse>,
+) {
+    when (data) {
+        is ResultStatus.Loading -> {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp)
+            )
+        }
+
+        is ResultStatus.Success -> {
+
+            MoviesList(loadMore, navigateToDetail, isLoading, movieList ,modifier)
+        }
+
+        is ResultStatus.Error -> {
+            Text(text = "Ocorreu um erro, tente novamente mais tarde")
+        }
+    }
+
+}
+
+@Composable
+private fun MoviesList(
+    loadMore: (Int) -> Unit,
+    navigateToDetail: (Long) -> Unit,
+    isLoading: Boolean,
+    listData: List<MovieResponse>,
+    modifier: Modifier,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -40,6 +72,7 @@ fun MovieListScreen(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
         items(listData.size) { index ->
             loadMore(index)
             MoviePoster(

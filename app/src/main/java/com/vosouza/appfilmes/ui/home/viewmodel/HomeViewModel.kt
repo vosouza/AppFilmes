@@ -2,6 +2,7 @@ package com.vosouza.appfilmes.ui.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.data.di.IoDispatcher
 import com.vosouza.appfilmes.data.model.MovieResponse
 import com.vosouza.appfilmes.data.repository.MovieRepository
@@ -49,20 +50,24 @@ class HomeViewModel @Inject constructor(
                 }
 
                 _homeState.value = _homeState.value.copy(
-                    moviesResponse = addList(_homeState.value.moviesResponse, response.results),
+                    moviesResponse = ResultStatus.Success(Unit),
+                    movieList = addList(_homeState.value.movieList, response.results),
                     isLoading = false,
                     totalPages = response.totalPages,
                     currentPage = response.page
                 )
             } catch (e: Exception) {
-                print(e)
+                _homeState.value = _homeState.value.copy(
+                    moviesResponse = ResultStatus.Error(e),
+                    isLoading = false,
+                )
             }
 
         }
     }
 
     fun getMoreMovies(itemIndex: Int = 0) {
-        val listSize = _homeState.value.moviesResponse.size - 1
+        val listSize = _homeState.value.movieList.size - 1
         val totalPages = _homeState.value.totalPages
         val isLoading = _homeState.value.isLoading
 

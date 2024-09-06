@@ -1,5 +1,6 @@
 package com.vosouza.appfilmes.ui.home.state
 
+import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.data.model.MovieResponse
 
 enum class HomeTabs{
@@ -9,8 +10,9 @@ enum class HomeTabs{
 
 data class HomeState(
     val selectedTab: HomeTabs = HomeTabs.ALL_MOVIES,
-    val isLoading: Boolean = false,
     val totalPages: Long = 0L,
     val currentPage: Int = 0,
-    val moviesResponse: List<MovieResponse> = listOf()
+    val isLoading: Boolean = false,
+    val moviesResponse: ResultStatus<Unit> = ResultStatus.Loading,
+    val movieList: List<MovieResponse> = listOf()
 )
