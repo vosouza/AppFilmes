@@ -15,7 +15,7 @@
 - **Gson**: 
   Converte dados JSON provenientes da API em objetos Kotlin e vice-versa, facilitando o trabalho com os dados.
 - **Splash-core**: 
-  Implementa a tela de splash, exibida ao iniciar o aplicativo, proporcionando uma melhor experiência ao usuário.
+  Implementa a tela de splash, exibida ao iniciar o aplicativo.
 - **Coil**: 
   Carrega imagens de forma eficiente e otimizada, utilizando o Compose para exibi-las nas telas.
 - **Navigation**: 
