@@ -22,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class LoginRepositoryTest {
+class LoginViewModelTest {
 
     @get:Rule
     var mainCoroutineRule = InstantTaskExecutorRule()
