@@ -90,7 +90,7 @@ fun LoginScreen(
                 },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = gray,
-                    unfocusedTextColor = gray
+                    unfocusedContainerColor = gray
                 ),
                 singleLine = true,
                 modifier = modifier
@@ -122,7 +122,7 @@ fun LoginScreen(
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = gray,
-                    unfocusedTextColor = gray
+                    unfocusedContainerColor = gray
                 ),
                 modifier = modifier
                     .fillMaxWidth()
@@ -159,7 +159,6 @@ fun LoginScreen(
                     fontSize = 14.sp,
                     color = Color.Red
                 )
-
                 else -> {
                     Spacer(modifier = Modifier.height(16.dp))
                 }

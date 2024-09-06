@@ -16,8 +16,8 @@ import org.junit.Test
 
 class RepositoryTest {
 
-    val service = mockk<MoviesService>()
-    lateinit var moviesRepository: MovieRepository
+    private val service = mockk<MoviesService>()
+    private lateinit var moviesRepository: MovieRepository
 
 
     @Before

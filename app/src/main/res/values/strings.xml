@@ -7,4 +7,14 @@
     <string name="loggin_error">Erro ao efetuar o login</string>
     <string name="loggin">Entrar</string>
     <string name="logo">Logo</string>
+    <string name="brq_movies">BRQ Movies</string>
+    <string name="ocorreu_um_erro_tente_novamente_mais_tarde">Ocorreu um erro, tente novamente mais tarde</string>
+    <string name="sinopse">SINOPSE</string>
+    <string name="popularidade">Popularidade</string>
+    <string name="votos">Votos</string>
+    <string name="lan_amento">Lançamento</string>
+    <string name="status">Status</string>
+    <string name="voltar">Voltar</string>
+    <string name="favoritar">Favoritar</string>
+    <string name="icon">icon</string>
 </resources>

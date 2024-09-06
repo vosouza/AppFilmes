@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.vosouza.appfilmes.R
 import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.core.util.imageNetworkURL
 import com.vosouza.appfilmes.data.model.MovieResponse
@@ -51,7 +53,7 @@ fun MovieListScreen(
         }
 
         is ResultStatus.Error -> {
-            Text(text = "Ocorreu um erro, tente novamente mais tarde")
+            Text(text = stringResource(R.string.ocorreu_um_erro_tente_novamente_mais_tarde))
         }
     }
 

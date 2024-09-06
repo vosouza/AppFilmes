@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -182,7 +183,7 @@ private fun SuccessScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "SINOPSE",
+                text = stringResource(R.string.sinopse),
                 color = orange,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -211,7 +212,7 @@ private fun SuccessScreen(
                         .weight(1f, fill = true)
                         .padding(start = 16.dp, bottom = 8.dp, top = 16.dp, end = 8.dp),
                     icon = R.drawable.like_icon_black,
-                    "Popularidade",
+                    stringResource(R.string.popularidade),
                     movie.popularity.toString()
                 )
                 ButtonWithLabel(
@@ -219,7 +220,7 @@ private fun SuccessScreen(
                         .weight(1f, fill = true)
                         .padding(start = 8.dp, bottom = 8.dp, top = 16.dp, end = 16.dp),
                     icon = R.drawable.star_icon,
-                    "Votos",
+                    stringResource(R.string.votos),
                     movie.voteCount.toString()
                 )
             }
@@ -235,7 +236,7 @@ private fun SuccessScreen(
                         .weight(1f, fill = true)
                         .padding(start = 16.dp, bottom = 8.dp, top = 16.dp, end = 8.dp),
                     icon = R.drawable.calendar_icon,
-                    "Lançamento",
+                    stringResource(R.string.lan_amento),
                     movie.releaseDate
                 )
                 ButtonWithLabel(
@@ -243,7 +244,7 @@ private fun SuccessScreen(
                         .weight(1f, fill = true)
                         .padding(start = 8.dp, bottom = 8.dp, top = 16.dp, end = 16.dp),
                     icon = R.drawable.bell_icon,
-                    "Status",
+                    stringResource(R.string.status),
                     movie.status
                 )
             }
@@ -263,7 +264,7 @@ private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
         ) {
             Icon(
                 ImageVector.vectorResource(id = R.drawable.arrow_icon),
-                contentDescription = "Voltar",
+                contentDescription = stringResource(R.string.voltar),
                 tint = Color.Unspecified,
             )
         }
@@ -274,7 +275,7 @@ private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
         ) {
             Icon(
                 ImageVector.vectorResource(id = R.drawable.like_icon),
-                contentDescription = "Favoritar",
+                contentDescription = stringResource(R.string.favoritar),
                 tint = Color.Unspecified,
             )
         }
@@ -301,7 +302,7 @@ fun ButtonWithLabel(modifier: Modifier, icon: Int, label: String, text: String) 
             ) {
                 Icon(
                     imageVector = ImageVector.vectorResource(id = icon),
-                    contentDescription = "n sei"
+                    contentDescription = stringResource(R.string.icon)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
