@@ -39,7 +39,7 @@ class MovieNavigationActions(navController: NavController) {
     val navigateToLogin: () -> Unit = {
         navController.navigate(LOGIN_ROUTE) {
             popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
+                inclusive = true
             }
             launchSingleTop = true
             restoreState = true

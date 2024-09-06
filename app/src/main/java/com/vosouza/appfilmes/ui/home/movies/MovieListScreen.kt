@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -67,6 +68,8 @@ private fun MoviesList(
     listData: List<MovieResponse>,
     modifier: Modifier,
 ) {
+    Spacer(modifier = Modifier.height(24.dp))
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(8.dp),
@@ -102,6 +105,7 @@ fun MoviePoster(navigateToDetail: (Long) -> Unit, movie: MovieResponse) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(4.dp)
             .height(250.dp)
             .clickable { navigateToDetail.invoke(movie.id) },
         shape = MaterialTheme.shapes.medium,

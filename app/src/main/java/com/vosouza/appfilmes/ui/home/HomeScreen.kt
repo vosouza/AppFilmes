@@ -46,7 +46,8 @@ import com.vosouza.appfilmes.ui.theme.white
 fun HomeScreen(
     modifier: Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToDetails: (Long) -> Unit
+    navigateToDetails: (Long) -> Unit,
+    logOut: () -> Unit
 ) {
     val state by viewModel.homeState.collectAsStateWithLifecycle()
 
@@ -58,7 +59,7 @@ fun HomeScreen(
         TopAppBar(
             title = { Text(stringResource(R.string.brq_movies), color = Color.White, fontSize = 28.sp) },
             actions = {
-                HomeMenu()
+                HomeMenu(logOut)
             },
         )
     }, content = { padding ->
@@ -92,7 +93,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeMenu() {
+private fun HomeMenu(logOut: () -> Unit) {
     var menuExpanded by remember {
         mutableStateOf(false)
     }
@@ -117,13 +118,13 @@ private fun HomeMenu() {
                     Icon(
                         modifier = Modifier.padding(8.dp),
                         imageVector = ImageVector.vectorResource(R.drawable.exit_icon),
-                        contentDescription = "Exit"
+                        contentDescription = stringResource(R.string.exit)
                     )
-                    Text("Sair", color = Color.White, fontSize = 24.sp)
+                    Text(stringResource(R.string.sair), color = Color.White, fontSize = 24.sp)
                 }
             },
             onClick = {
-
+                logOut.invoke()
             },
         )
     }

@@ -22,8 +22,11 @@ fun MoviesNavGraph(
         composable(
             route = MovieDestinations.HOME_LIST_ROUTE
         ){
-            HomeScreen(modifier = modifier){ movieId ->
+            HomeScreen(modifier = modifier, navigateToDetails = {
+                    movieId ->
                 navDestinations.navigateToDetails.invoke(movieId)
+            }){
+                navDestinations.navigateToLogin.invoke()
             }
         }
         composable(
