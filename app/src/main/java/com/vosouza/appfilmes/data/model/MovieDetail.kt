@@ -3,80 +3,80 @@ package com.vosouza.appfilmes.data.model
 import com.google.gson.annotations.SerializedName
 
 data class MovieDetailResponse(
-    val adult: Boolean,
+    var adult: Boolean = false,
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    var backdropPath: String = "",
     @SerializedName("belongs_to_collection")
-    val belongsToCollection: BelongsToCollection,
-    val budget: Long,
-    val genres: List<Genre>,
-    val homepage: String,
-    val id: Long,
+    var belongsToCollection: BelongsToCollection = BelongsToCollection(),
+    var budget: Long = 0L,
+    var genres: List<Genre> = listOf(),
+    var homepage: String = "",
+    var id: Long = 0L,
     @SerializedName("imdb_id")
-    val imdbId: String,
+    var imdbId: String = "",
     @SerializedName("origin_country")
-    val originCountry: List<String>,
+    var originCountry: List<String> = listOf(),
     @SerializedName("original_language")
-    val originalLanguage: String,
+    var originalLanguage: String = "",
     @SerializedName("original_title")
-    val originalTitle: String,
-    val overview: String,
-    val popularity: Double,
+    var originalTitle: String = "",
+    var overview: String = "",
+    var popularity: Double = 0.0,
     @SerializedName("poster_path")
-    val posterPath: String,
+    var posterPath: String = "",
     @SerializedName("production_companies")
-    val productionCompanies: List<ProductionCompany>,
+    var productionCompanies: List<ProductionCompany> = listOf(),
     @SerializedName("production_countries")
-    val productionCountries: List<ProductionCountry>,
+    var productionCountries: List<ProductionCountry> = listOf(),
     @SerializedName("release_date")
-    val releaseDate: String,
-    val revenue: Long,
-    val runtime: Long,
+    var releaseDate: String = "",
+    var revenue: Long = 0L,
+    var runtime: Long = 0L,
     @SerializedName("spoken_languages")
-    val spokenLanguages: List<SpokenLanguage>,
-    val status: String,
-    val tagline: String,
-    val title: String,
-    val video: Boolean,
+    var spokenLanguages: List<SpokenLanguage> = listOf(),
+    var status: String = "",
+    var tagline: String = "",
+    var title: String = "",
+    var video: Boolean = false,
     @SerializedName("vote_average")
-    val voteAverage: Double,
+    var voteAverage: Double = 0.0,
     @SerializedName("vote_count")
-    val voteCount: Long,
+    var voteCount: Long = 0L,
 )
 
 data class BelongsToCollection(
-    val id: Long,
-    val name: String,
+    var id: Long = 0L,
+    var name: String = "",
     @SerializedName("poster_path")
-    val posterPath: String,
+    var posterPath: String = "",
     @SerializedName("backdrop_path")
-    val backdropPath: String,
+    var backdropPath: String = "",
 )
 
 data class Genre(
-    val id: Long,
-    val name: String,
+    var id: Long = 0L,
+    var name: String = "",
 )
 
 data class ProductionCompany(
-    val id: Long,
+    var id: Long = 0L,
     @SerializedName("logo_path")
-    val logoPath: String?,
-    val name: String,
+    var logoPath: String = "",
+    var name: String = "",
     @SerializedName("origin_country")
-    val originCountry: String,
+    var originCountry: String = "",
 )
 
 data class ProductionCountry(
     @SerializedName("iso_3166_1")
-    val iso31661: String,
-    val name: String,
+    var iso31661: String = "",
+    var name: String = "",
 )
 
 data class SpokenLanguage(
     @SerializedName("english_name")
-    val englishName: String,
+    var englishName: String = "",
     @SerializedName("iso_639_1")
-    val iso6391: String,
-    val name: String,
+    var iso6391: String = "",
+    var name: String = "",
 )
