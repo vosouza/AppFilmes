@@ -2,7 +2,9 @@ package com.vosouza.appfilmes.ui.details
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.vosouza.appfilmes.core.util.ResultStatus
+import com.vosouza.appfilmes.data.model.MovieDbModel
 import com.vosouza.appfilmes.data.model.MovieDetailResponse
+import com.vosouza.appfilmes.data.repository.MovieDatabaseRepository
 import com.vosouza.appfilmes.data.repository.MovieRepository
 import com.vosouza.appfilmes.ui.details.viewmodel.DetailsState
 import com.vosouza.appfilmes.ui.details.viewmodel.DetailsViewModel
@@ -29,9 +31,11 @@ class DetailsViewModelTest {
     var mainCoroutineRule = InstantTaskExecutorRule()
     private val dispatcher = StandardTestDispatcher()
     private val movieRepository = mockk<MovieRepository>(relaxed = true)
+    private val databaseRepository = mockk<MovieDatabaseRepository>(relaxed = true)
     private val viewmodel by lazy {
         DetailsViewModel(
             movieRepository,
+            databaseRepository,
             dispatcher
         )
     }
@@ -89,6 +93,36 @@ class DetailsViewModelTest {
         assertThat(actualResult, instanceOf(ResultStatus.Error::class.java))
     }
 
+
+    @Test
+    fun `Assert if saveMovie return success`() {
+        dispatcher.scheduler.advanceUntilIdle()
+        coEvery { databaseRepository.saveMovie(any()) } returns Unit
+
+        runTest {
+            viewmodel.saveMovie(1L,"")
+        }
+
+        val actualResult = viewmodel.saveMovieState.value
+
+        assertThat(actualResult, instanceOf(ResultStatus.Success::class.java))
+    }
+
+    @Test
+    fun `Assert if saveMovie return error`() {
+        val response = Exception()
+
+        coEvery { databaseRepository.saveMovie(any()) } throws response
+
+        runTest {
+            viewmodel.saveMovie(1L,"")
+        }
+
+        val actualResult = viewmodel.saveMovieState.value
+
+        assertThat(actualResult, instanceOf(ResultStatus.Error::class.java))
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown(){
@@ -96,4 +130,6 @@ class DetailsViewModelTest {
     }
 
     private fun mockMovie() = MovieDetailResponse()
+
+    private fun mockMovieDb() = MovieDbModel()
 }

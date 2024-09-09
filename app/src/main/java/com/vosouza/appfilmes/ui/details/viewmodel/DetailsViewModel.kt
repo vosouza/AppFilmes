@@ -33,7 +33,7 @@ class DetailsViewModel @Inject constructor(
     private val _saveMovie: MutableStateFlow<ResultStatus<Unit>> =
         MutableStateFlow(ResultStatus.Loading)
     val saveMovieState = _saveMovie.stateIn(
-        viewModelScope, SharingStarted.Eagerly, _homeState.value
+        viewModelScope, SharingStarted.Eagerly, _saveMovie.value
     )
 
     fun getMovie(movieId: String) {
