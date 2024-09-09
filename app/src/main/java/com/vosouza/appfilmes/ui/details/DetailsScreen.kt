@@ -27,10 +27,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,9 +72,11 @@ fun DetailsScreen(
 ) {
 
     val state = viewModel.detailState.collectAsStateWithLifecycle()
+    val saveState = viewModel.saveMovieState.collectAsStateWithLifecycle()
 
     val scrollState = rememberScrollState()
     var showTopAppBar by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(scrollState.value) {
         if (scrollState.value > 0) {
@@ -80,6 +85,8 @@ fun DetailsScreen(
             showTopAppBar = false
         }
     }
+
+    SaveMovieSnackBar(saveState, snackbarHostState)
 
     LaunchedEffect(Unit) {
         viewModel.getMovie(movieId)
@@ -102,7 +109,9 @@ fun DetailsScreen(
 
         is ResultStatus.Success -> {
             val data = (state.value as ResultStatus.Success<DetailsState>).data.movie
-            SuccessScreen(showTopAppBar, scrollState, data, navigateBack)
+            SuccessScreen(showTopAppBar, scrollState, data, snackbarHostState, navigateBack) {
+                viewModel.saveMovie(data.id, data.posterPath)
+            }
         }
 
         is ResultStatus.Error -> {
@@ -118,7 +127,25 @@ fun DetailsScreen(
             }
         }
     }
+}
 
+@Composable
+private fun SaveMovieSnackBar(
+    saveState: State<ResultStatus<Any>>,
+    snackbarHostState: SnackbarHostState,
+) {
+    LaunchedEffect(key1 = saveState.value) {
+        when (saveState.value) {
+            is ResultStatus.Loading -> Unit
+            is ResultStatus.Success -> {
+                snackbarHostState.showSnackbar("Filme Salvo")
+            }
+
+            is ResultStatus.Error -> {
+                snackbarHostState.showSnackbar("Erro ao salvar, por favor tente mais tarde")
+            }
+        }
+    }
 }
 
 @Composable
@@ -126,17 +153,22 @@ private fun SuccessScreen(
     showTopAppBar: Boolean,
     scrollState: ScrollState,
     movie: MovieDetailResponse,
+    snackbarHostState: SnackbarHostState,
     navigateBack: () -> Unit,
+    saveMovie: () -> Unit,
 ) {
-    Scaffold(topBar = {
-        AnimatedVisibility(
-            visible = showTopAppBar,
-            enter = slideInVertically(initialOffsetY = { -40 }) + expandVertically(),
-            exit = slideOutVertically() + shrinkVertically()
-        ) {
-            DetailsAppBar(movie.title, navigateBack)
-        }
-    }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            AnimatedVisibility(
+                visible = showTopAppBar,
+                enter = slideInVertically(initialOffsetY = { -40 }) + expandVertically(),
+                exit = slideOutVertically() + shrinkVertically()
+            ) {
+                DetailsAppBar(movie.title, navigateBack, saveMovie)
+            }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -171,7 +203,7 @@ private fun SuccessScreen(
                         )
                     }
                     IconButton(
-                        onClick = { },
+                        onClick = { saveMovie.invoke() },
                         modifier = Modifier
                             .padding(24.dp)
                             .align(Alignment.TopEnd)
@@ -266,6 +298,7 @@ private fun SuccessScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
         }
 
     }
@@ -273,7 +306,11 @@ private fun SuccessScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
+private fun DetailsAppBar(
+    title: String,
+    navigateBack: () -> Unit,
+    saveMovie: () -> Unit,
+) {
     TopAppBar(navigationIcon = {
         IconButton(
             onClick = { navigateBack.invoke() }, modifier = Modifier.padding(16.dp)
@@ -289,11 +326,15 @@ private fun DetailsAppBar(title: String, navigateBack: () -> Unit) {
             onClick = { },
             modifier = Modifier.padding(16.dp)
         ) {
-            Icon(
-                ImageVector.vectorResource(id = R.drawable.like_icon),
-                contentDescription = stringResource(R.string.favoritar),
-                tint = Color.Unspecified,
-            )
+            IconButton(
+                onClick = { saveMovie.invoke() }, modifier = Modifier.padding(16.dp)
+            ) {
+                Icon(
+                    ImageVector.vectorResource(id = R.drawable.like_icon),
+                    contentDescription = stringResource(R.string.favoritar),
+                    tint = Color.Unspecified,
+                )
+            }
         }
     }, title = {
         Text(text = title, fontSize = 24.sp)

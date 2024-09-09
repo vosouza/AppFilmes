@@ -19,4 +19,7 @@
     <string name="icon">icon</string>
     <string name="exit">Exit</string>
     <string name="sair">Sair</string>
+    <string name="saved_movie">Saved movie</string>
+    <string name="tem_certeza_que_quer_remover_esse_item_da_lista_de_favorito">Tem certeza que quer remover esse item da lista de favorito?</string>
+    <string name="remover_favorito">Remover favorito?</string>
 </resources>

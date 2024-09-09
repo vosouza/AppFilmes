@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +18,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.vosouza.appfilmes.R
+import com.vosouza.appfilmes.ui.common.CustomDialog
+import com.vosouza.appfilmes.ui.home.favorites.FavoritesScreen
 import com.vosouza.appfilmes.ui.home.movies.MovieListScreen
 import com.vosouza.appfilmes.ui.home.state.HomeState
 import com.vosouza.appfilmes.ui.home.state.HomeTabs
@@ -50,10 +53,6 @@ fun HomeScreen(
     logOut: () -> Unit
 ) {
     val state by viewModel.homeState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        viewModel.getAllMovies()
-    }
 
     Scaffold(topBar = {
         TopAppBar(
@@ -79,15 +78,37 @@ fun HomeScreen(
                     data = state.moviesResponse,
                     movieList = state.movieList,
                     isLoading = state.isLoading,
+                    loadMovies = {
+                        viewModel.getAllMovies()
+                    },
                     loadMore = { itemIndex ->
                         viewModel.getMoreMovies(itemIndex)
                     },
                     navigateToDetail = navigateToDetails,
                 )
 
-                HomeTabs.FAVORITE_MOVIES -> Text(text = "")
+                HomeTabs.FAVORITE_MOVIES -> FavoritesScreen(
+                    modifier = modifier,
+                    listData = state.favoriteList,
+                    isLoading = state.isLoading ,
+                    navigateToDetails = navigateToDetails,
+                    removeItem = { id -> viewModel.confirmRemoveItem(id)},
+                    loadMovie = {
+                        viewModel.getAllMoviesFromDB()
+                    },
+                )
             }
 
+        }
+
+        if(state.removeItem){
+            CustomDialog(
+                onConfirmation = { viewModel.doRemoveItem()},
+                onDismissRequest = { viewModel.dismissRemoveItem() },
+                dialogTitle = stringResource(R.string.remover_favorito),
+                dialogText = stringResource(R.string.tem_certeza_que_quer_remover_esse_item_da_lista_de_favorito),
+                icon = Icons.Default.Delete
+            )
         }
     })
 }

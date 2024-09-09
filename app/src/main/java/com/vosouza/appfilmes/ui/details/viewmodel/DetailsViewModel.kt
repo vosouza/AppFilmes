@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.data.di.IoDispatcher
+import com.vosouza.appfilmes.data.model.MovieDbModel
 import com.vosouza.appfilmes.data.model.MovieDetailResponse
+import com.vosouza.appfilmes.data.repository.MovieDatabaseRepository
 import com.vosouza.appfilmes.data.repository.MovieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -18,12 +20,19 @@ import javax.inject.Inject
 @HiltViewModel
 class DetailsViewModel @Inject constructor(
     val repository: MovieRepository,
+    private val databaseRepository: MovieDatabaseRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
     private val _homeState: MutableStateFlow<ResultStatus<DetailsState>> =
         MutableStateFlow(ResultStatus.Loading)
     val detailState = _homeState.stateIn(
+        viewModelScope, SharingStarted.Eagerly, _homeState.value
+    )
+
+    private val _saveMovie: MutableStateFlow<ResultStatus<Unit>> =
+        MutableStateFlow(ResultStatus.Loading)
+    val saveMovieState = _saveMovie.stateIn(
         viewModelScope, SharingStarted.Eagerly, _homeState.value
     )
 
@@ -53,8 +62,32 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
+    fun saveMovie(movieId: Long, poster: String){
+        viewModelScope.launch {
+            try {
+
+                _saveMovie.value = ResultStatus.Loading
+
+                withContext(dispatcher) {
+                    databaseRepository.saveMovie(
+                        MovieDbModel(
+                            movieId,
+                            poster
+                        )
+                    )
+                }
+
+                _saveMovie.value = ResultStatus.Success(Unit)
+
+            } catch (e: Exception) {
+                _saveMovie.value = ResultStatus.Error(e)
+            }
+        }
+    }
+
 }
 
 data class DetailsState(
     val movie: MovieDetailResponse,
+    val saveWorkout: Boolean = true
 )

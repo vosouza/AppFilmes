@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.vosouza.appfilmes.core.util.ResultStatus
 import com.vosouza.appfilmes.data.di.IoDispatcher
 import com.vosouza.appfilmes.data.model.MovieResponse
+import com.vosouza.appfilmes.data.repository.MovieDatabaseRepository
 import com.vosouza.appfilmes.data.repository.MovieRepository
 import com.vosouza.appfilmes.ui.home.state.HomeState
 import com.vosouza.appfilmes.ui.home.state.HomeTabs
@@ -20,6 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val repository: MovieRepository,
+    val databaseRepository: MovieDatabaseRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -73,6 +75,65 @@ class HomeViewModel @Inject constructor(
 
         if (!isLoading && itemIndex in listSize..<totalPages) {
             getAllMovies(_homeState.value.currentPage + 1)
+        }
+    }
+
+    fun getAllMoviesFromDB() {
+        viewModelScope.launch {
+
+            try {
+
+                _homeState.value = _homeState.value.copy(
+                    isLoading = true
+                )
+
+                val response = withContext(dispatcher) {
+                    databaseRepository.getAllMovies()
+                }
+
+                _homeState.value = _homeState.value.copy(
+                    favoriteList = response,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _homeState.value = _homeState.value.copy(
+                    moviesResponse = ResultStatus.Error(e),
+                    isLoading = false,
+                )
+            }
+
+        }
+    }
+
+    fun confirmRemoveItem(movieId: Long) {
+        _homeState.value = _homeState.value.copy(
+            removeItem = true,
+            removeItemId = movieId
+        )
+    }
+
+    fun dismissRemoveItem() {
+        _homeState.value = _homeState.value.copy(
+            removeItem = false,
+            removeItemId = 0L
+        )
+    }
+
+    fun doRemoveItem() {
+        viewModelScope.launch {
+            try {
+
+                val id = _homeState.value.removeItemId
+
+                withContext(dispatcher) {
+                    databaseRepository.removeId(id)
+                }
+
+                dismissRemoveItem()
+                getAllMoviesFromDB()
+            } catch (e: Exception) {
+                dismissRemoveItem()
+            }
         }
     }
 

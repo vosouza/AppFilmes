@@ -1,8 +1,10 @@
 package com.vosouza.appfilmes.data.di
 
 import com.vosouza.appfilmes.data.repository.LoginRepository
+import com.vosouza.appfilmes.data.repository.MovieDatabaseRepository
 import com.vosouza.appfilmes.data.repository.MovieRepository
 import com.vosouza.appfilmes.data.repository.implementation.FakeLoginRepositoryImpl
+import com.vosouza.appfilmes.data.repository.implementation.MovieDatabaseRepositoryImpl
 import com.vosouza.appfilmes.data.repository.implementation.MoviesRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -18,5 +20,8 @@ interface RepositoryModule {
 
     @Binds
     fun bindLoginRepository(loginRepository: FakeLoginRepositoryImpl): LoginRepository
+
+    @Binds
+    fun bindMovieDatabaseRepository(moviesRepository: MovieDatabaseRepositoryImpl): MovieDatabaseRepository
 
 }
